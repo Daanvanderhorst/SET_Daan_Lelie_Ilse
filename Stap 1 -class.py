@@ -22,7 +22,7 @@ class color(Enum):
     def _eq_(self, other):
         return self.color == other.color
 
-class shading(Enum):
+class shading(Enum):#shading comment
     solid = 1
     striped = 2
     empty = 3
