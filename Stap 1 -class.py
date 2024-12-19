@@ -8,7 +8,7 @@ class number(Enum):
     def _eq_(self, other):
         return self.number == other.number
         
-class symbol(Enum):
+class symbol(Enum): #hoi Daan
     diamont = 1
     wave = 2
     oval = 3
