@@ -1,0 +1,24 @@
+# Naam programma: .........
+# Het programma doet: ........
+# Programma gemaakt door: ........
+import pygame
+# -------- CONSTANTEN EN GLOBALE VARIABELEN --------
+WINDOW_SIZE = [1050, 750] #venstergrootte
+# -------- FUNCTIE DEFINITIES --------
+# -------- PYGAME INITIALISATIE --------
+pygame.init()
+screen = pygame.display.set_mode(WINDOW_SIZE) #open scherm
+pygame.display.set_caption("Set game") #geef een titel aan het scherm
+
+clock = pygame.time.Clock()# Zorgt voor verversingssnelheid van het scherm
+# -------- HOOFDLOOP VAN HET PROGRAMMA --------
+spel_is_afgelopen = False
+while not spel_is_afgelopen: 
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT: # Het kruisje is aangeklikt
+            spel_is_afgelopen = True # Het spel moet eindigen dus we zetten
+    clock.tick(30) # Ververs scherm met 30 frames per seconde
+    pygame.display.flip() # Ververs het beeldscherm met de bijgewerkte versie
+
+# -------- AFSLUITING --------
+pygame.quit() #sluit scherm af #BRON: https://course.cs.ru.nl/pythonVO/docs/PO/ganzenbord/HowtoPyGameGUI.pdf
