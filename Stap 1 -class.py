@@ -1,11 +1,9 @@
-from enum import Enum
-
+from enum import Enum 
 
 class number(Enum):
     num1 = 1
     num2 = 2
     num3 = 3
-
         
 class symbol(Enum): 
     diamont = 1
@@ -16,7 +14,6 @@ class color(Enum):
     red = 1
     green = 2
     purple = 3
-
 
 class shading(Enum):
     solid = 1
