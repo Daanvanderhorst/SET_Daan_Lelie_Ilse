@@ -3,22 +3,26 @@
 # Programma gemaakt door: ........
 import pygame
 # -------- CONSTANTEN EN GLOBALE VARIABELEN --------
-WINDOW_SIZE = [1050, 750] #venstergrootte
+WINDOW_SIZE = [1050, 750] # Afmeting van spelscherm instellen (in pixels: [breedte,hoogte])
 # -------- FUNCTIE DEFINITIES --------
 # -------- PYGAME INITIALISATIE --------
 pygame.init()
-screen = pygame.display.set_mode(WINDOW_SIZE) #open scherm
-pygame.display.set_caption("Set game") #geef een titel aan het scherm
-
+screen = pygame.display.set_mode(WINDOW_SIZE) # Spelscherm maken (en opslaan in een variabele screen)
+pygame.display.set_caption("Scherm titel") # Titel van spelscherm instellen
 clock = pygame.time.Clock()# Zorgt voor verversingssnelheid van het scherm
 # -------- HOOFDLOOP VAN HET PROGRAMMA --------
+# Deze boolean laat ons spel straks lopen, totdat er op het kruisje wordt gekikt om af te sluiten
+# (deze zet dan spel_is_afgelopen op True)
 spel_is_afgelopen = False
-while not spel_is_afgelopen: 
+while not spel_is_afgelopen:
+ # --- Check gebeurtenissen (zoals muiskliks enz.) ---
     for event in pygame.event.get():
-        if event.type == pygame.QUIT: # Het kruisje is aangeklikt
-            spel_is_afgelopen = True # Het spel moet eindigen dus we zetten
-    clock.tick(30) # Ververs scherm met 30 frames per seconde
-    pygame.display.flip() # Ververs het beeldscherm met de bijgewerkte versie
+       if event.type == pygame.QUIT: # Het kruisje is aangeklikt
+        spel_is_afgelopen = True # Het spel moet eindigen dus we zetten
 
+ # --- Teken de graphics ---
+ # --- Ververs het beeldschem met de nieuwe graphics ---
+clock.tick(30) # Ververs scherm met 30 frames per seconde
+pygame.display.flip() # Ververs het beeldscherm met de bijgewerkte versie
 # -------- AFSLUITING --------
-pygame.quit() #sluit scherm af #BRON: https://course.cs.ru.nl/pythonVO/docs/PO/ganzenbord/HowtoPyGameGUI.pdf
+pygame.quit() # Sluit het scherm af
