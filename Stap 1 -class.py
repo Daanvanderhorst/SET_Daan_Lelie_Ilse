@@ -3,19 +3,21 @@ from enum import Enum
 #https://www.geeksforgeeks.org/python-classes-and-objects/ 
 
 class color(Enum):
-    red = 1
-    green = 2
-    purple = 3
+    green = 1
+    purple = 2
+    red = 3
 
 class symbol(Enum): 
     diamont = 1
-    wave = 2
-    oval = 3
+    oval = 2
+    wave = 3
+
 
 class shading(Enum):
-    solid = 1
-    striped = 2
-    empty = 3
+    empty = 1
+    solid = 2
+    striped = 3
+
 
 class number(Enum):
     num1 = 1
