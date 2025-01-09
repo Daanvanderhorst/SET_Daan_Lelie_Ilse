@@ -1,14 +1,13 @@
-# Naam programma: .........
-# Het programma doet: ........
-# Programma gemaakt door: ........
+from comparison import *
+
 import pygame
 # -------- CONSTANTEN EN GLOBALE VARIABELEN --------
-WINDOW_SIZE = [1050, 750] # Afmeting van spelscherm instellen (in pixels: [breedte,hoogte])
+WINDOW_SIZE = [1250, 700] # Afmeting van spelscherm instellen (in pixels: [breedte,hoogte])
 # -------- FUNCTIE DEFINITIES --------
 # -------- PYGAME INITIALISATIE --------
 pygame.init()
 screen = pygame.display.set_mode(WINDOW_SIZE) # Spelscherm maken (en opslaan in een variabele screen)
-pygame.display.set_caption("Scherm titel") # Titel van spelscherm instellen
+pygame.display.set_caption("Vind de SET") # Titel van spelscherm instellen
 clock = pygame.time.Clock()# Zorgt voor verversingssnelheid van het scherm
 # -------- HOOFDLOOP VAN HET PROGRAMMA --------
 # Deze boolean laat ons spel straks lopen, totdat er op het kruisje wordt gekikt om af te sluiten
