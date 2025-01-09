@@ -19,4 +19,4 @@ def firstset(list): #dit vind gewoon een set en dan stopt het
         for j in range(i+1, len(list)-1):
             for k in range(j+1, len(list)):
                 if checkforset(list[i], list[j], list[k]):
-                    return (i+1, j+1, k+1)
+                    return ([k, j, i])
