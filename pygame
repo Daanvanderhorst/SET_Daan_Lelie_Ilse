@@ -2,7 +2,11 @@ from comparison import *
 
 import pygame
 
-# -------- CONSTANTEN EN GLOBALE VARIABELEN --------
+KAART_AFSTAND = 20 #Afstanden tussen kaarten (om ze netjes te positioneren)
+BORD_START_POSITIE = (50, 50) # Startpositie van het spelbord (linkerbovenhoek van het eerste kaartvak)
+kaarten_op_bord = [] #Variabele voor kaarten die op het bord liggen (lege lijst, wordt later gevuld)
+geselecteerde_kaarten = [] #Variabele om geselecteerde kaarten bij te houden (voor een mogelijke set)
+MAX_KAARTEN_OP_BORD = 12 #Maximaal aantal kaarten op het bord
 
 WINDOW_SIZE = [1250, 700] # Afmeting van spelscherm instellen (in pixels: [breedte,hoogte])
 
