@@ -1,6 +1,7 @@
 from comparison import *
 import pygame
 import random
+import tkinter as tk
 
 KAART_AFSTAND = 20 #Afstanden tussen kaarten (om ze netjes te positioneren)
 BORD_START_POSITIE = (50, 50) # Startpositie van het spelbord (linkerbovenhoek van het eerste kaartvak)
@@ -19,7 +20,7 @@ def makethedeck():
       twelvecards.append(lijst.pop())
 
 def replace3():
-   for i in range(0, 3):
+   for i in range(3):
       twelvecards.pop(0)
       twelvecards.append(lijst.pop())
 
@@ -31,10 +32,8 @@ def replace_found_set(set):#from high to low
    for i in range(0, 3):
       twelvecards.append(lijst.pop())
 
-makethedeck()
-print(twelvecards)
-replace_found_set([8,6,4])
-print(twelvecards)
+kaart = pygame.image.load("C:\\Users\\daan_\\OneDrive\\Documents\\GitHub\\SET_Daan_Lelie_Ilse\\kaarten\\greendiamondempty1.gif")
+
 # -------- PYGAME INITIALISATIE --------
 
 
@@ -44,19 +43,22 @@ pygame.display.set_caption("Vind de SET") # Titel van spelscherm instellen
 clock = pygame.time.Clock()# Zorgt voor verversingssnelheid van het scherm
 
 # -------- HOOFDLOOP VAN HET PROGRAMMA --------
-
+makethedeck()
+print(twelvecards)
+button = tk.Button(text="click me", width=40, height=30, bg="purple")
 # Deze boolean laat ons spel straks lopen, totdat er op het kruisje wordt gekikt om af te sluiten
 
 # (deze zet dan spel_is_afgelopen op True)
 spel_is_afgelopen = False
 while not spel_is_afgelopen:
+    
  # --- Check gebeurtenissen (zoals muiskliks enz.) ---
     for event in pygame.event.get():
-       if event.type == pygame.QUIT: # Het kruisje is aangeklikt
+      if event.type == pygame.QUIT: # Het kruisje is aangeklikt
         spel_is_afgelopen = True # Het spel moet eindigen dus we zetten
-
  # --- Teken de graphics ---
-
+    screen.fill("purple")
+    screen.blit(kaart, (300,300))
  # --- Ververs het beeldschem met de nieuwe graphics ---
 clock.tick(30) # Ververs scherm met 30 frames per seconde
 pygame.display.flip() # Ververs het beeldscherm met de bijgewerkte versie
