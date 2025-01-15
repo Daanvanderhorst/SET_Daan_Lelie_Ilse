@@ -14,6 +14,7 @@ MAX_KAARTEN_OP_BORD = 12 #Maximaal aantal kaarten op het bord
 twelvecards = []
 card_images = []
 selected_cards = []
+button = {}
 cards = []  # Lijst voor kaarten met hun Rects en afbeeldingen
 
 lijst = [*range(81)]
@@ -33,9 +34,9 @@ def replace3():
 
 def replace_found_set(set):#from high to low
    set.sort()
-   twelvecards.pop(int(set[0]))
-   twelvecards.pop(int(set[1]))
    twelvecards.pop(int(set[2]))
+   twelvecards.pop(int(set[1]))
+   twelvecards.pop(int(set[0]))
    for i in range(0, 3):
       twelvecards.append(lijst.pop())
 
@@ -47,9 +48,13 @@ button_layout_rect.bottomright = (30, 20)
 #https://pygame-gui.readthedocs.io/en/latest/layout_guide.html
 
 def makedeck(): #12 kaarten op het scherm bouwen
-   image = pygame.image.load(f"kaart{i}.gif")
-   image = pygame.transform.scale(image, (KAART_BREEDTE, KAART_LENGTE)) 
-   card_images.append(image)
+   screen.fill("pink")
+   selected_cards.clear()
+   cards.clear()
+   for i in twelvecards:
+      image = pygame.image.load(card(i).imagename())
+      image = pygame.transform.scale(image, (KAART_BREEDTE, KAART_LENGTE)) 
+      card_images.append(image)
    
    start_x = (1250 - (4 * KAART_BREEDTE + 3 * KAART_AFSTAND)) // 2  # Centreer raster horizontaal
    start_y = (700 - (3 * KAART_LENGTE + 2 * KAART_AFSTAND)) // 2  # Centreer raster verticaal
@@ -58,48 +63,65 @@ def makedeck(): #12 kaarten op het scherm bouwen
       for col in range(4):  # 4 kolommen
          x = start_x + col * (KAART_BREEDTE + KAART_AFSTAND)
          y = start_y + row * (KAART_LENGTE + KAART_AFSTAND)
-         rect = pygame.Rect(x, y, KAART_BREEDTE, KAART_LENGTE)
-         cards.append({"rect": rect, "image": card_images[row * 4 + col]})
+         rect = pygame.Rect(x , y  , KAART_BREEDTE , KAART_LENGTE )
+         cards.append({"rect": rect, "image": card_images[row * 4 + col], "selected": False, "kaart": card(twelvecards[row * 4 + col]), "index" : row * 4 + col})
+
    
-kaart = pygame.image.load("kaarten\greendiamondempty1.gif")
+   
+
 
 def kaartenklikken():
-   for event in pygame.event.get():
-      if event.type == pygame.QUIT:
-         running = False
-      elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Linkermuisknop
-         mouse_pos = event.pos
-      for card in cards:
-         if card["rect"].collidepoint(mouse_pos):
-            if card["selected"]:
-               card["selected"] = False
-               selected_cards.remove(card)
-            elif len(selected_cards) < 3:
-               card["selected"] = True
-               selected_cards.append(card)
-               print(f"Geselecteerde kaarten: {len(selected_cards)}")
+   mouse_pos = event.pos
+   for card in cards:
+      if card["rect"].collidepoint(mouse_pos):
+         if card["selected"]:
+            card["selected"] = False
+            border_rect = card["rect"].inflate(20, 20) 
+            pygame.draw.rect(screen, "pink", border_rect, 20)  
+            selected_cards.remove(card)
+         elif len(selected_cards) < 3:
+            card["selected"] = True
+            selected_cards.append(card)
+   for card in cards:
+      if card["selected"]:
+         border_rect = card["rect"].inflate(20, 20) 
+         pygame.draw.rect(screen, "lightgreen", border_rect, 20)  
+
+
+button_layout_rect = pygame.Rect(575, 20, 100, 50)
+
+def makebutton():
+   pygame.draw.rect(screen, "lightgreen", button_layout_rect)  
+   font = pygame.font.Font(None, 50)
+   text = font.render('SET!', True, "black")  # Tekst op de knop
+   screen.blit(text, (button_layout_rect.x + 10, button_layout_rect.y + 10))  # Plaats de tekst
+
+
+def checkbutton():
+   mouse_pos = event.pos
+   if button_layout_rect.collidepoint(mouse_pos) and len(selected_cards)==3:
+      if checkforset(selected_cards[0]["kaart"], selected_cards[1]["kaart"], selected_cards[2]["kaart"]):
+         replace_found_set([selected_cards[0]["index"], selected_cards[1]["index"], selected_cards[2]["index"]])
+         makedeck()
+         print("jaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
 # -------- PYGAME INITIALISATIE --------
 pygame.init()
 screen = pygame.display.set_mode(WINDOW_SIZE) # Spelscherm maken (en opslaan in een variabele screen)
-screen.fill("purple")
+screen.fill("pink")
 pygame.display.set_caption("Vind de SET") # Titel van spelscherm instellen
 clock = pygame.time.Clock()# Zorgt voor verversingssnelheid van het scherm
 
-for card in cards:
-   screen.blit(card["image"], card["rect"].topleft)
+
 
 pygame.display.flip()
 
 
 
-
-
-
 # -------- HOOFDLOOP VAN HET PROGRAMMA --------
 makethedeck()
-print(twelvecards)
-button = tk.Button(text="click me", width=40, height=30, bg="purple")
+
+makedeck()
 # Deze boolean laat ons spel straks lopen, totdat er op het kruisje wordt gekikt om af te sluiten
 
 # (deze zet dan spel_is_afgelopen op True)
@@ -110,8 +132,15 @@ while not spel_is_afgelopen:
     for event in pygame.event.get():
       if event.type == pygame.QUIT: # Het kruisje is aangeklikt
         spel_is_afgelopen = True # Het spel moet eindigen dus we zetten
+      elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Linkermuisknop
+         kaartenklikken()
+         checkbutton()
  # --- Teken de graphics ---
-    screen.blit(kaart, (300,300)) 
+    for i in cards:
+      screen.blit(i["image"], i["rect"].topleft)
+    makebutton()
+
+
  # --- Ververs het beeldschem met de nieuwe graphics ---
     clock.tick(30) # Ververs scherm met 30 frames per seconde
     pygame.display.flip() # Ververs het beeldscherm met de bijgewerkte versie
