@@ -39,6 +39,7 @@ kaart = pygame.image.load("C:\\Users\\daan_\\OneDrive\\Documents\\GitHub\\SET_Da
 
 pygame.init()
 screen = pygame.display.set_mode(WINDOW_SIZE) # Spelscherm maken (en opslaan in een variabele screen)
+screen.fill("purple")
 pygame.display.set_caption("Vind de SET") # Titel van spelscherm instellen
 clock = pygame.time.Clock()# Zorgt voor verversingssnelheid van het scherm
 
@@ -57,11 +58,10 @@ while not spel_is_afgelopen:
       if event.type == pygame.QUIT: # Het kruisje is aangeklikt
         spel_is_afgelopen = True # Het spel moet eindigen dus we zetten
  # --- Teken de graphics ---
-    screen.fill("purple")
-    screen.blit(kaart, (300,300))
+    screen.blit(kaart, (300,300)) 
  # --- Ververs het beeldschem met de nieuwe graphics ---
-clock.tick(30) # Ververs scherm met 30 frames per seconde
-pygame.display.flip() # Ververs het beeldscherm met de bijgewerkte versie
+    clock.tick(30) # Ververs scherm met 30 frames per seconde
+    pygame.display.flip() # Ververs het beeldscherm met de bijgewerkte versie
 
 
 # -------- AFSLUITING --------
