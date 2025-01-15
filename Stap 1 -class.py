@@ -1,31 +1,28 @@
 from enum import Enum 
-
 #https://www.geeksforgeeks.org/python-classes-and-objects/ 
 
 class color(Enum):
-    green = 1
-    purple = 2
-    red = 3
+    green = 0
+    purple = 1
+    red = 2
 
 class symbol(Enum): 
-    diamont = 1
-    oval = 2
-    wave = 3
-
+    diamond = 0
+    oval = 1
+    squiggle = 2
 
 class shading(Enum):
-    empty = 1
-    solid = 2
-    striped = 3
-
+    empty = 0
+    filled = 1
+    shaded = 2
 
 class number(Enum):
-    num1 = 1
-    num2 = 2
-    num3 = 3
+    1 = 1
+    2 = 2
+    3 = 3
         
 class card:
-    def _init_(self, number, symbol, color, shading):
+    def __init__(self, color, symbol, shading, number):
         self.color = color
         self.symbol = symbol
         self.shading = shading
@@ -41,19 +38,11 @@ class card:
         return self.shading == other.shading
     def eqnumber(self, other):
         return self.number == other.number
-    
+    def imagename(self):
+        imcolor = color(int(self.color)).name
+        return(imcolor)
     def _eq_(self, other):#==
         if self.eqnumber(self, other) and self.eqcolor(self, other) and self.eqshading(self, other) and self.symbol(self, other) == True:
             card.self = card.other 
-
-
-class set:
-    def _init_(self, cards):
-        self.cards = cards 
-
-
-
-
-
-
-    
+kaart = card(1,1,1,1)
+print(kaart.imagename)
