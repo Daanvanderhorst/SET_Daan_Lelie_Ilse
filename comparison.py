@@ -1,5 +1,6 @@
 
-def checkforset(card1, card2, card3): #binnen drie kaarten kijken of er een set is
+def checkforset(list): #binnen drie kaarten kijken of er een set is
+    card1, card2, card3 = list[0], list[1], list[2]  #haal de kaarten uit de lijst om ze te vergelijken
     for i in range(0,4): #je gaat alle verschillende eigenschappen af (4 eigenschappen)
         if (card1.list[i]+card2.list[i]+card3.list[i])%3 != 0: #checken of alles niet hetzelfde of niet verschillend is 
             return False 
