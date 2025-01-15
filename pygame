@@ -32,7 +32,7 @@ def replace_found_set(set):#from high to low
    for i in range(0, 3):
       twelvecards.append(lijst.pop())
 
-kaart = pygame.image.load("C:\\Users\\daan_\\OneDrive\\Documents\\GitHub\\SET_Daan_Lelie_Ilse\\kaarten\\greendiamondempty1.gif")
+kaart = pygame.image.load("kaarten\greendiamondempty1.gif")
 
 # -------- PYGAME INITIALISATIE --------
 
