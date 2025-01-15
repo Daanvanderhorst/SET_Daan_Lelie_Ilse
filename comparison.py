@@ -1,7 +1,7 @@
 
 def checkforset(card1, card2, card3): #binnen drie kaarten kijken of er een set is
     for i in range(0,4): #je gaat alle verschillende eigenschappen af (4 eigenschappen)
-        if (card1.list[i]+card2.list[i]+card3.list[i])%3 != 0: #checken of alles niet hetzelfde of niet verschillend is 
+        if (card1.list[i].value + card2.list[i].value + card3.list[i].value)%3 != 0: #checken of alles niet hetzelfde of niet verschillend is 
             return False 
     return True #dan is het een set
 
