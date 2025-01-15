@@ -15,12 +15,17 @@ class Shading(Enum):
     FILLED = 1
     SHADED = 2
         
-class Card:
+class Number(Enum):
+    num1 = 1
+    num2 = 2
+    num3 = 3
+
+class card:
     def __init__(self, idnumber):
         self.color = Color(idnumber//27)
         self.symbol = Symbol(idnumber%27//9)
         self.shading = Shading(idnumber%9//3)
-        self.number = idnumber%3+1
+        self.number = Number(idnumber%3+1)
         self.list = [self.color, self.symbol, self.shading, self.number]
 
     def eqcolor(self, other):
@@ -39,10 +44,11 @@ class Card:
         imcolor = self.color.name.lower()
         imsymbol = self.symbol.name.lower()
         imshading = self.shading.name.lower()
-        return f"kaarten\\{imcolor}{imsymbol}{imshading}{self.number}.gif"
+        imnumber = self.number.value
+        return f"kaarten\\{imcolor}{imsymbol}{imshading}{imnumber}.gif"
     
     def _eq_(self, other):#==
         return self.eqnumber(self, other) and self.eqcolor(self, other) and self.eqshading(self, other) and self.symbol(self, other)
 
-kaart = Card(1)
+kaart = card(1)
 print(kaart.imagename()) 
