@@ -1,14 +1,21 @@
 from comparison import *
+from clescles import *
 import pygame
 import random
 import tkinter as tk
 
+KAART_BREEDTE = 100
+KAART_LENGTE = 150 
 KAART_AFSTAND = 20 #Afstanden tussen kaarten (om ze netjes te positioneren)
 BORD_START_POSITIE = (50, 50) # Startpositie van het spelbord (linkerbovenhoek van het eerste kaartvak)
 kaarten_op_bord = [] #Variabele voor kaarten die op het bord liggen (lege lijst, wordt later gevuld)
 geselecteerde_kaarten = [] #Variabele om geselecteerde kaarten bij te houden (voor een mogelijke set)
 MAX_KAARTEN_OP_BORD = 12 #Maximaal aantal kaarten op het bord
 twelvecards = []
+card_images = []
+selected_cards = []
+cards = []  # Lijst voor kaarten met hun Rects en afbeeldingen
+
 lijst = [*range(81)]
 random.shuffle(lijst)
 
@@ -32,16 +39,62 @@ def replace_found_set(set):#from high to low
    for i in range(0, 3):
       twelvecards.append(lijst.pop())
 
+button_layout_rect = pygame.Rect(0, 0, 100, 20)
+button_layout_rect.bottomright = (30, 20)
+
+
+
+#https://pygame-gui.readthedocs.io/en/latest/layout_guide.html
+
+def makedeck(): #12 kaarten op het scherm bouwen
+   image = pygame.image.load(f"kaart{i}.gif")
+   image = pygame.transform.scale(image, (KAART_BREEDTE, KAART_LENGTE)) 
+   card_images.append(image)
+   
+   start_x = (1250 - (4 * KAART_BREEDTE + 3 * KAART_AFSTAND)) // 2  # Centreer raster horizontaal
+   start_y = (700 - (3 * KAART_LENGTE + 2 * KAART_AFSTAND)) // 2  # Centreer raster verticaal
+   
+   for row in range(3):  # 3 rijen
+      for col in range(4):  # 4 kolommen
+         x = start_x + col * (KAART_BREEDTE + KAART_AFSTAND)
+         y = start_y + row * (KAART_LENGTE + KAART_AFSTAND)
+         rect = pygame.Rect(x, y, KAART_BREEDTE, KAART_LENGTE)
+         cards.append({"rect": rect, "image": card_images[row * 4 + col]})
+   
 kaart = pygame.image.load("kaarten\greendiamondempty1.gif")
 
+def kaartenklikken():
+   for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+         running = False
+      elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Linkermuisknop
+         mouse_pos = event.pos
+      for card in cards:
+         if card["rect"].collidepoint(mouse_pos):
+            if card["selected"]:
+               card["selected"] = False
+               selected_cards.remove(card)
+            elif len(selected_cards) < 3:
+               card["selected"] = True
+               selected_cards.append(card)
+               print(f"Geselecteerde kaarten: {len(selected_cards)}")
+
 # -------- PYGAME INITIALISATIE --------
-
-
 pygame.init()
 screen = pygame.display.set_mode(WINDOW_SIZE) # Spelscherm maken (en opslaan in een variabele screen)
 screen.fill("purple")
 pygame.display.set_caption("Vind de SET") # Titel van spelscherm instellen
 clock = pygame.time.Clock()# Zorgt voor verversingssnelheid van het scherm
+
+for card in cards:
+   screen.blit(card["image"], card["rect"].topleft)
+
+pygame.display.flip()
+
+
+
+
+
 
 # -------- HOOFDLOOP VAN HET PROGRAMMA --------
 makethedeck()
