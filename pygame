@@ -4,6 +4,7 @@ import pygame
 import random
 import tkinter as tk
 
+pygame.init()
 
 
 KAART_BREEDTE = 100
@@ -18,9 +19,8 @@ card_images = []
 selected_cards = []
 button = {}
 cards = []  # Lijst voor kaarten met hun Rects en afbeeldingen
-scorehuman = 0
-scorecomputer = 0 
-
+#scorehuman = 0
+#scorecomputer = 0 
 
 
 lijst = [*range(81)]
@@ -29,6 +29,12 @@ random.shuffle(lijst)
 WINDOW_SIZE = [1250, 700] # Afmeting van spelscherm instellen (in pixels: [breedte,hoogte])
 
 # -------- FUNCTIE DEFINITIES --------
+
+
+# Fonts
+
+
+
 def makethedeck(): 
    for q in range(0, 12):
       twelvecards.append(lijst.pop())
@@ -46,6 +52,8 @@ def replace_found_set(set):#from high to low
 
 button_layout_rect = pygame.Rect(0, 0, 100, 20)
 button_layout_rect.bottomright = (30, 20)
+
+
 
 
 #https://pygame-gui.readthedocs.io/en/latest/layout_guide.html
@@ -71,6 +79,7 @@ def makedeck(): #12 kaarten op het scherm bouwen
          rect = pygame.Rect(x , y  , KAART_BREEDTE , KAART_LENGTE )
          cards.append({"rect": rect, "image": card_images[row * 4 + col], "selected": False, "kaart": card(twelvecards[row * 4 + col]), "index" : row * 4 + col})
    
+
 
 
 def kaartenklikken():
@@ -105,9 +114,10 @@ def checkbutton():
    if button_layout_rect.collidepoint(mouse_pos) and len(selected_cards)==3:
       if checkforset(selected_cards[0]["kaart"], selected_cards[1]["kaart"], selected_cards[2]["kaart"]):
          replace_found_set([selected_cards[0]["index"], selected_cards[1]["index"], selected_cards[2]["index"]])
-         scorehuman += 1
-         print(scorehuman)
+         #scorehuman += 1
+         #print(scorehuman)
          makedeck()
+
 
 
 # -------- PYGAME INITIALISATIE --------
@@ -119,33 +129,35 @@ clock = pygame.time.Clock()# Zorgt voor verversingssnelheid van het scherm
 
 
 
-
-
 # -------- HOOFDLOOP VAN HET PROGRAMMA --------
 
 makethedeck()
 makedeck()
 
-# Deze boolean laat ons spel straks lopen, totdat er op het kruisje wordt gekikt om af te sluiten
 
-# (deze zet dan spel_is_afgelopen op True)
+
 spel_is_afgelopen = False
 while not spel_is_afgelopen:
-    
- # --- Check gebeurtenissen (zoals muiskliks enz.) ---
+    # --- Check gebeurtenissen (zoals muiskliks enz.) ---
     for event in pygame.event.get():
-      if event.type == pygame.QUIT: # Het kruisje is aangeklikt
-        spel_is_afgelopen = True # Het spel moet eindigen dus we zetten
-      elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Linkermuisknop
-         kaartenklikken()
-         checkbutton()
- # --- Teken de graphics ---
+        if event.type == pygame.QUIT:  # Het kruisje is aangeklikt
+            spel_is_afgelopen = True  # Het spel moet eindigen
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Linkermuisknop
+            kaartenklikken()
+            checkbutton()
+
+    # --- Teken de graphics ---
+    screen.fill("pink")  # Maak het scherm schoon
     for i in cards:
-      screen.blit(i["image"], i["rect"].topleft)
+        screen.blit(i["image"], i["rect"].topleft)
     makebutton()
- # --- Ververs het beeldschem met de nieuwe graphics ---
-    clock.tick(30) # Ververs scherm met 30 frames per seconde
-    pygame.display.flip() # Ververs het beeldscherm met de bijgewerkte versie
+
+
+    # --- Ververs het beeldscherm met de nieuwe graphics ---
+    clock.tick(30)  # Ververs scherm met 30 frames per seconde
+    pygame.display.flip()  # Ververs het beeldscherm met de bijgewerkte versie
+
+
 
 
 # -------- AFSLUITING --------
