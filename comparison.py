@@ -18,5 +18,5 @@ def firstset(list): #dit vind gewoon een set en dan stopt het
     for i in range(0, len(list)-2):
         for j in range(i+1, len(list)-1):
             for k in range(j+1, len(list)):
-                if checkforset(list[i], list[j], list[k]):
+                if checkforset(list[i]["kaart"], list[j]["kaart"], list[k]["kaart"]):
                     return ([k, j, i])
