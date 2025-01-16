@@ -34,15 +34,12 @@ def replace3():
 
 def replace_found_set(set):#from high to low
    set.sort()
-   twelvecards.pop(int(set[2]))
-   twelvecards.pop(int(set[1]))
-   twelvecards.pop(int(set[0]))
-   for i in range(0, 3):
-      twelvecards.append(lijst.pop())
+   twelvecards[set[2]]=lijst.pop()
+   twelvecards[set[1]]=lijst.pop()
+   twelvecards[set[0]]=lijst.pop()
 
 button_layout_rect = pygame.Rect(0, 0, 100, 20)
 button_layout_rect.bottomright = (30, 20)
-
 
 
 #https://pygame-gui.readthedocs.io/en/latest/layout_guide.html
@@ -51,6 +48,8 @@ def makedeck(): #12 kaarten op het scherm bouwen
    screen.fill("pink")
    selected_cards.clear()
    cards.clear()
+   card_images.clear()
+
    for i in twelvecards:
       image = pygame.image.load(card(i).imagename())
       image = pygame.transform.scale(image, (KAART_BREEDTE, KAART_LENGTE)) 
@@ -65,8 +64,6 @@ def makedeck(): #12 kaarten op het scherm bouwen
          y = start_y + row * (KAART_LENGTE + KAART_AFSTAND)
          rect = pygame.Rect(x , y  , KAART_BREEDTE , KAART_LENGTE )
          cards.append({"rect": rect, "image": card_images[row * 4 + col], "selected": False, "kaart": card(twelvecards[row * 4 + col]), "index" : row * 4 + col})
-
-   
    
 
 
@@ -103,7 +100,7 @@ def checkbutton():
       if checkforset(selected_cards[0]["kaart"], selected_cards[1]["kaart"], selected_cards[2]["kaart"]):
          replace_found_set([selected_cards[0]["index"], selected_cards[1]["index"], selected_cards[2]["index"]])
          makedeck()
-         print("jaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+
 
 # -------- PYGAME INITIALISATIE --------
 pygame.init()
@@ -114,14 +111,13 @@ clock = pygame.time.Clock()# Zorgt voor verversingssnelheid van het scherm
 
 
 
-pygame.display.flip()
-
 
 
 # -------- HOOFDLOOP VAN HET PROGRAMMA --------
-makethedeck()
 
+makethedeck()
 makedeck()
+
 # Deze boolean laat ons spel straks lopen, totdat er op het kruisje wordt gekikt om af te sluiten
 
 # (deze zet dan spel_is_afgelopen op True)
@@ -139,8 +135,6 @@ while not spel_is_afgelopen:
     for i in cards:
       screen.blit(i["image"], i["rect"].topleft)
     makebutton()
-
-
  # --- Ververs het beeldschem met de nieuwe graphics ---
     clock.tick(30) # Ververs scherm met 30 frames per seconde
     pygame.display.flip() # Ververs het beeldscherm met de bijgewerkte versie
