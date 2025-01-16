@@ -49,6 +49,3 @@ class card:
     
     def _eq_(self, other):#==
         return self.eqnumber(self, other) and self.eqcolor(self, other) and self.eqshading(self, other) and self.symbol(self, other)
-
-kaart = card(1)
-print(kaart.imagename()) 
