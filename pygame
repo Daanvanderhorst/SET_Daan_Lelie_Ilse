@@ -4,6 +4,8 @@ import pygame
 import random
 import tkinter as tk
 
+
+
 KAART_BREEDTE = 100
 KAART_LENGTE = 150 
 KAART_AFSTAND = 20 #Afstanden tussen kaarten (om ze netjes te positioneren)
@@ -16,6 +18,10 @@ card_images = []
 selected_cards = []
 button = {}
 cards = []  # Lijst voor kaarten met hun Rects en afbeeldingen
+scorehuman = 0
+scorecomputer = 0 
+
+
 
 lijst = [*range(81)]
 random.shuffle(lijst)
@@ -99,6 +105,8 @@ def checkbutton():
    if button_layout_rect.collidepoint(mouse_pos) and len(selected_cards)==3:
       if checkforset(selected_cards[0]["kaart"], selected_cards[1]["kaart"], selected_cards[2]["kaart"]):
          replace_found_set([selected_cards[0]["index"], selected_cards[1]["index"], selected_cards[2]["index"]])
+         scorehuman += 1
+         print(scorehuman)
          makedeck()
 
 
