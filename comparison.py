@@ -10,8 +10,8 @@ def listofsets(list): #binnen meerdere kaarten alle sets zoeken
     for i in range(0, len(list)-2): 
         for j in range(i+1, len(list)-1): 
             for k in range(j+1, len(list)):
-                if checkforset(list[i], list[j], list[k]):
-                    sets.append((i+1, j+1, k+1)) #de plus 1 is zodat je niet de index krijg maar echt het nummer van de fysieke kaart
+                if checkforset(list[i]["kaart"], list[j]["kaart"], list[k]["kaart"]):
+                    sets.append((i, j, k)) #de plus 1 is zodat je niet de index krijg maar echt het nummer van de fysieke kaart
     return sets #een lijst terug met alle sets uit de kaarten 
 
 def firstset(list): #dit vind gewoon een set en dan stopt het 
