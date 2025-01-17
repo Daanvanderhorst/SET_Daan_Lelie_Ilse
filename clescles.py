@@ -28,18 +28,6 @@ class card:
         self.number = Number(idnumber%3+1)
         self.list = [self.color, self.symbol, self.shading, self.number]
 
-    def eqcolor(self, other):
-        return self.color == other.color
-
-    def eqsymbol(self, other):
-        return self.symbol == other.symbol
-
-    def eqshading(self, other):
-        return self.shading == other.shading
-
-    def eqnumber(self, other):
-        return self.number == other.number
-
     def imagename(self):
         imcolor = self.color.name.lower()
         imsymbol = self.symbol.name.lower()
@@ -47,5 +35,5 @@ class card:
         imnumber = self.number.value
         return f"kaarten\\{imcolor}{imsymbol}{imshading}{imnumber}.gif"
     
-    def _eq_(self, other):#==
-        return self.eqnumber(self, other) and self.eqcolor(self, other) and self.eqshading(self, other) and self.symbol(self, other)
+ 
+
