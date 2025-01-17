@@ -30,6 +30,7 @@ lijst = [*range(81)]
 random.shuffle(lijst)
 lastfail = [-1, -1, -1]
 wrong_timer = 0
+eindtijd = 0
 eind = False
 
 WINDOW_SIZE = [1250, 700] # Afmeting van spelscherm instellen (in pixels: [breedte,hoogte])
@@ -59,6 +60,8 @@ def replace_found_set(set):#from high to low
    else: 
       global eind
       eind = True
+      global eindtijd
+      eindtijd = int(pygame.time.get_ticks()/1000)
 
 button_layout_rect = pygame.Rect(0, 0, 100, 20)
 klok_layout_rect = pygame.Rect(WINDOW_SIZE[0] - 140, 20, 150, 150)
@@ -220,6 +223,8 @@ while not spel_is_afgelopen:
          score_eindtext = font.render(f"Je hebt {score_player} SETs gevonden en {score_computer} SETs misgelopen", True, "black")
          screen.blit(lose_text, (490, 250))
          screen.blit(score_eindtext, (220, 300))
+      time_text = font.render(f"Je hebt er {eindtijd} seconden over gedaan", True, "black")
+      screen.blit(time_text, (400, 350))
 
     # --- Ververs het beeldscherm met de nieuwe graphics ---
    clock.tick(30)  # Ververs scherm met 30 frames per seconde
