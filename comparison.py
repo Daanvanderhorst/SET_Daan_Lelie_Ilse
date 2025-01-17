@@ -14,7 +14,7 @@ def listofsets(list): #binnen meerdere kaarten alle sets zoeken
                     sets.append((i, j, k)) #de plus 1 is zodat je niet de index krijg maar echt het nummer van de fysieke kaart
     return sets #een lijst terug met alle sets uit de kaarten 
 
-def firstset(list): #dit vind gewoon een set en dan stopt het 
+def firstset(list): 
     for i in range(0, len(list)-2):
         for j in range(i+1, len(list)-1):
             for k in range(j+1, len(list)):
