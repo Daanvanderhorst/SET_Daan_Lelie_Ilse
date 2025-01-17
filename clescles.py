@@ -1,4 +1,5 @@
 from enum import Enum 
+import pygame
 
 class Color(Enum):
     GREEN = 0
@@ -20,20 +21,27 @@ class Number(Enum):
     num2 = 2
     num3 = 3
 
-class card:
-    def __init__(self, idnumber):
+class Card:
+    def __init__(self, idnumber, index, rect):
         self.color = Color(idnumber//27)
         self.symbol = Symbol(idnumber%27//9)
         self.shading = Shading(idnumber%9//3)
         self.number = Number(idnumber%3+1)
-        self.list = [self.color, self.symbol, self.shading, self.number]
-
-    def imagename(self):
+        self.index = index
+        self.rect = rect
+        self.selected = False
+        self.list = [self.color.value, self.symbol.value, self.shading.value, self.number.value]
+    
+    def getimage(self):
         imcolor = self.color.name.lower()
         imsymbol = self.symbol.name.lower()
         imshading = self.shading.name.lower()
         imnumber = self.number.value
-        return f"kaarten\\{imcolor}{imsymbol}{imshading}{imnumber}.gif"
+        imagename = f"kaarten\\{imcolor}{imsymbol}{imshading}{imnumber}.gif"
+        image = pygame.image.load(imagename)
+        image = pygame.transform.scale(image, (100, 150))
+        return image
     
- 
-
+    def change_selected(self):
+        self.selected = not self.selected
+        return self.selected

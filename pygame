@@ -19,7 +19,7 @@ card_images = []
 selected_cards = []
 q = True
 button = {}
-cards = []  # Lijst voor kaarten met hun Rects en afbeeldingen
+boardcards = []  # Lijst voor kaarten met hun Rects en afbeeldingen
 start_time = pygame.time.get_ticks()
 timer_duration = 30000  # 30 seconden in milliseconden
 timer_running = True
@@ -30,6 +30,7 @@ lijst = [*range(81)]
 random.shuffle(lijst)
 lastfail = [-1, -1, -1]
 wrong_timer = 0
+eindtijd = 0
 eind = False
 
 WINDOW_SIZE = [1250, 700] # Afmeting van spelscherm instellen (in pixels: [breedte,hoogte])
@@ -43,22 +44,21 @@ timer_font = pygame.font.Font(None, 40)  # Font voor de timer
 # Timer variabelen
 
 
-def makethedeck(): 
-   for q in range(0, 12):
-      twelvecards.append(lijst.pop())
-
 def replace_found_set(set):#from high to low
    if len(lijst)>0:
       set.sort()
-      twelvecards[set[2]]=lijst.pop()
-      twelvecards[set[1]]=lijst.pop()
-      twelvecards[set[0]]=lijst.pop()
+      for i in range(2, -1, -1):
+         boardcards[set[i]] = Card(lijst.pop(),  boardcards[set[i]].index, boardcards[set[i]].rect)
       global start_time
       start_time = pygame.time.get_ticks()
-      makedeck()
+      selected_cards.clear()
+      screen.fill("pink")
+      checksets()
    else: 
       global eind
       eind = True
+      global eindtijd
+      eindtijd = int(pygame.time.get_ticks()/1000)
 
 button_layout_rect = pygame.Rect(0, 0, 100, 20)
 klok_layout_rect = pygame.Rect(WINDOW_SIZE[0] - 140, 20, 150, 150)
@@ -72,18 +72,8 @@ button_layout_rect.bottomright = (30, 20)
 def makedeck(): #12 kaarten op het scherm bouwen
    screen.fill("pink")
    selected_cards.clear()
-   cards.clear()
-   global score_player
-   if score_player == 0:
-      score_text = font.render(f'YOUR SCORE: 0', True, "black")
-      screen.blit(score_text, (20, 20))
-   card_images.clear()
-
-   for i in twelvecards:
-      image = pygame.image.load(card(i).imagename())
-      image = pygame.transform.scale(image, (KAART_BREEDTE, KAART_LENGTE)) 
-      card_images.append(image)
-   
+   boardcards.clear()
+  
    start_x = (1250 - (4 * KAART_BREEDTE + 3 * KAART_AFSTAND)) // 2  # Centreer raster horizontaal
    start_y = (700 - (3 * KAART_LENGTE + 2 * KAART_AFSTAND)) // 2  # Centreer raster verticaal
    
@@ -92,29 +82,29 @@ def makedeck(): #12 kaarten op het scherm bouwen
          x = start_x + col * (KAART_BREEDTE + KAART_AFSTAND)
          y = start_y + row * (KAART_LENGTE + KAART_AFSTAND)
          rect = pygame.Rect(x , y  , KAART_BREEDTE , KAART_LENGTE )
-         cards.append({"rect": rect, "image": card_images[row * 4 + col], "selected": False, "kaart": card(twelvecards[row * 4 + col]), "index" : row * 4 + col})
+         boardcards.append(Card(twelvecards[row * 4 + col], row * 4 + col, rect))
    checksets()
    
 def checksets():
-   if (len(listofsets(cards)))==0:
+   if (len(listofsets(boardcards)))==0:
       replace_found_set(lastset)
 
 
 def kaartenklikken():
    mouse_pos = event.pos
-   for card in cards:
-      if card["rect"].collidepoint(mouse_pos):
-         if card["selected"]:
-            card["selected"] = False
-            border_rect = card["rect"].inflate(20, 20) 
+   for card in boardcards:
+      if card.rect.collidepoint(mouse_pos):
+         if card.selected:
+            card.change_selected()
+            border_rect = card.rect.inflate(20, 20) 
             pygame.draw.rect(screen, "pink", border_rect, 20)  
             selected_cards.remove(card)
          elif len(selected_cards) < 3:
-            card["selected"] = True
+            card.change_selected()
             selected_cards.append(card)
-   for card in cards:
-      if card["selected"]:
-         border_rect = card["rect"].inflate(20, 20) 
+   for card in boardcards:
+      if card.selected:
+         border_rect = card.rect.inflate(20, 20) 
          pygame.draw.rect(screen, "lightgreen", border_rect, 20)  
 
 
@@ -131,20 +121,20 @@ def checkbutton():
    global score_player
    mouse_pos = event.pos 
    if button_layout_rect.collidepoint(mouse_pos) and len(selected_cards)==3:
-      if checkforset(selected_cards[0]["kaart"], selected_cards[1]["kaart"], selected_cards[2]["kaart"]):
+      if checkforset(selected_cards[0].list, selected_cards[1].list, selected_cards[2].list):
          lastset.clear()
-         lastset.append(selected_cards[0]["index"])
-         lastset.append(selected_cards[1]["index"])
-         lastset.append(selected_cards[2]["index"])
+         lastset.append(selected_cards[0].index)
+         lastset.append(selected_cards[1].index)
+         lastset.append(selected_cards[2].index)
          score_player +=  1
          replace_found_set(lastset)
       else: 
-         if score_player > 0 and (lastfail[0] != selected_cards[0]["index"] or lastfail[1] != selected_cards[1]["index"] or lastfail[2] != selected_cards[2]["index"]):
+         if score_player > 0 and (lastfail[0] != selected_cards[0].index or lastfail[1] != selected_cards[1].index or lastfail[2] != selected_cards[2].index):
             score_player -= 1
             lastfail.clear()
-            lastfail.append(selected_cards[0]["index"])
-            lastfail.append(selected_cards[1]["index"])
-            lastfail.append(selected_cards[2]["index"])
+            lastfail.append(selected_cards[0].index)
+            lastfail.append(selected_cards[1].index)
+            lastfail.append(selected_cards[2].index)
          global wrong_timer
          wrong_timer = 60
       
@@ -157,7 +147,7 @@ def draw_timer():
         timer_text = timer_font.render(f'Time: {seconds_left}s', True, "black")
         screen.blit(timer_text, (WINDOW_SIZE[0] - 140, 20))  # Plaats de timer rechtsbovenin
         if remaining_time == 0:
-            replace_found_set(firstset(cards))
+            replace_found_set(firstset(boardcards))
             global score_computer
             score_computer += 1
 
@@ -176,8 +166,8 @@ clock = pygame.time.Clock()# Zorgt voor verversingssnelheid van het scherm
 
 
 # -------- HOOFDLOOP VAN HET PROGRAMMA --------
-
-makethedeck()
+for q in range(0, 12):
+   twelvecards.append(lijst.pop())
 makedeck()
 
 
@@ -194,8 +184,8 @@ while not spel_is_afgelopen:
     # --- Teken de graphics ---
 
    if not eind:
-      for i in cards:
-         screen.blit(i["image"], i["rect"].topleft)
+      for card in boardcards:
+         screen.blit(card.getimage(), card.rect.topleft)
       makebutton()
       pygame.draw.rect(screen, "pink", klok_layout_rect)
       draw_timer()  # Teken de timer op het scherm
@@ -212,14 +202,16 @@ while not spel_is_afgelopen:
       screen.fill("pink")
       if score_player > score_computer:
          win_text = font.render(f"Gefeliciteerd!", True, "black")
-         score_eindtext = font.render(f'Je hebt {score_player} SETs gevonden en maar {score_computer} SETs misgelopen', True, "black")
+         score_eindtext = font.render(f'Je hebt {score_player} sets gevonden en maar {score_computer} sets misgelopen', True, "black")
          screen.blit(win_text, (500, 250))
          screen.blit(score_eindtext, (200, 300))
       else:
          lose_text = font.render(f"Goed geprobeerd :(", True, "black")
-         score_eindtext = font.render(f"Je hebt {score_player} SETs gevonden en {score_computer} SETs misgelopen", True, "black")
+         score_eindtext = font.render(f"Je hebt {score_player} sets gevonden en {score_computer} sets misgelopen", True, "black")
          screen.blit(lose_text, (490, 250))
          screen.blit(score_eindtext, (220, 300))
+      time_text = font.render(f"Je hebt er {eindtijd} seconden over gedaan", True, "black")
+      screen.blit(time_text, (350, 350))
 
     # --- Ververs het beeldscherm met de nieuwe graphics ---
    clock.tick(30)  # Ververs scherm met 30 frames per seconde
