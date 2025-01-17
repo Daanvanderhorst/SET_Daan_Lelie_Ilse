@@ -2,7 +2,6 @@ from comparison import *
 from clescles import *
 import pygame
 import random
-import tkinter as tk
 
 pygame.init()
 
@@ -10,6 +9,7 @@ KAART_BREEDTE = 100
 KAART_LENGTE = 150 
 KAART_AFSTAND = 20 #Afstanden tussen kaarten (om ze netjes te positioneren)
 score_player = 0
+score_computer = 0
 BORD_START_POSITIE = (50, 50) # Startpositie van het spelbord (linkerbovenhoek van het eerste kaartvak)
 kaarten_op_bord = [] #Variabele voor kaarten die op het bord liggen (lege lijst, wordt later gevuld)
 geselecteerde_kaarten = [] #Variabele om geselecteerde kaarten bij te houden (voor een mogelijke set)
@@ -21,18 +21,16 @@ q = True
 button = {}
 cards = []  # Lijst voor kaarten met hun Rects en afbeeldingen
 start_time = pygame.time.get_ticks()
-timer_duration = 30000  # 30 seconden in milliseconden
+timer_duration = 300  # 30 seconden in milliseconden
 timer_running = True
-
 current_time = pygame.time.get_ticks()
-
-#scorehuman = 0
-#scorecomputer = 0 
-lastset = []
-
-
+lastset = [0, 4, 8]
+score_rect = pygame.Rect(0, 0, 350, 150)
 lijst = [*range(81)]
 random.shuffle(lijst)
+lastfail = [-1, -1, -1]
+wrong_timer = 0
+eind = False
 
 WINDOW_SIZE = [1250, 700] # Afmeting van spelscherm instellen (in pixels: [breedte,hoogte])
 
@@ -49,11 +47,6 @@ def makethedeck():
    for q in range(0, 12):
       twelvecards.append(lijst.pop())
 
-def replace3():
-   for i in range(3):
-      twelvecards.pop(0)
-      twelvecards.append(lijst.pop())
-
 def replace_found_set(set):#from high to low
    if len(lijst)>0:
       set.sort()
@@ -63,7 +56,9 @@ def replace_found_set(set):#from high to low
       global start_time
       start_time = pygame.time.get_ticks()
       makedeck()
-   #else: eindscherm
+   else: 
+      global eind
+      eind = True
 
 button_layout_rect = pygame.Rect(0, 0, 100, 20)
 klok_layout_rect = pygame.Rect(WINDOW_SIZE[0] - 140, 20, 150, 150)
@@ -101,7 +96,6 @@ def makedeck(): #12 kaarten op het scherm bouwen
    checksets()
    
 def checksets():
-   print(listofsets(cards))
    if (len(listofsets(cards)))==0:
       replace_found_set(lastset)
 
@@ -145,8 +139,14 @@ def checkbutton():
          score_player +=  1
          replace_found_set(lastset)
       else: 
-         wrong_text = font.render(f'WRONG SET', True, "red")
-         screen.blit(wrong_text, (100, 100))
+         if score_player > 0 and (lastfail[0] != selected_cards[0]["index"] or lastfail[1] != selected_cards[1]["index"] or lastfail[2] != selected_cards[2]["index"]):
+            score_player -= 1
+            lastfail.clear()
+            lastfail.append(selected_cards[0]["index"])
+            lastfail.append(selected_cards[1]["index"])
+            lastfail.append(selected_cards[2]["index"])
+         global wrong_timer
+         wrong_timer = 60
       
 def draw_timer():
     global q 
@@ -157,7 +157,9 @@ def draw_timer():
         timer_text = timer_font.render(f'Time: {seconds_left}s', True, "black")
         screen.blit(timer_text, (WINDOW_SIZE[0] - 140, 20))  # Plaats de timer rechtsbovenin
         if remaining_time == 0:
-            replace_found_set(firstset(cards))    
+            replace_found_set(firstset(cards))
+            global score_computer
+            score_computer += 1
 
          
 
@@ -182,7 +184,7 @@ makedeck()
 spel_is_afgelopen = False
 while not spel_is_afgelopen:
     # --- Check gebeurtenissen (zoals muiskliks enz.) ---
-    for event in pygame.event.get():
+   for event in pygame.event.get():
         if event.type == pygame.QUIT:  # Het kruisje is aangeklikt
             spel_is_afgelopen = True  # Het spel moet eindigen
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Linkermuisknop
@@ -191,18 +193,37 @@ while not spel_is_afgelopen:
 
     # --- Teken de graphics ---
 
-    for i in cards:
-        screen.blit(i["image"], i["rect"].topleft)
-    makebutton()
-    pygame.draw.rect(screen, "pink", klok_layout_rect)
-    draw_timer()  # Teken de timer op het scherm
-    score_text = font.render(f'YOUR SCORE: {score_player}', True, "black")
-    screen.blit(score_text, (20, 20))
-
+   if not eind:
+      for i in cards:
+         screen.blit(i["image"], i["rect"].topleft)
+      makebutton()
+      pygame.draw.rect(screen, "pink", klok_layout_rect)
+      draw_timer()  # Teken de timer op het scherm
+      pygame.draw.rect(screen, "pink", score_rect)
+      score_text_play = font.render(f'YOUR SCORE: {score_player}', True, "black")
+      screen.blit(score_text_play, (20, 20))
+      score_text_com = font.render(f'COMPUTER SCORE: {score_computer}', True, "black")
+      screen.blit(score_text_com, (20, 60))
+      if wrong_timer > 0:
+         wrong_timer -= 1
+         wrong_text = font.render(f'WRONG SET!', True, "red")
+         screen.blit(wrong_text, (100, 100))
+   else:
+      screen.fill("pink")
+      if score_player > score_computer:
+         win_text = font.render(f"Gefeliciteerd!", True, "black")
+         score_eindtext = font.render(f'Je hebt {score_player} SETs gevonden en maar {score_computer} SETs misgelopen', True, "black")
+         screen.blit(win_text, (500, 250))
+         screen.blit(score_eindtext, (200, 300))
+      else:
+         lose_text = font.render(f"Goed geprobeerd :(", True, "black")
+         score_eindtext = font.render(f"Je hebt {score_player} SETs gevonden en {score_computer} SETs misgelopen", True, "black")
+         screen.blit(lose_text, (490, 250))
+         screen.blit(score_eindtext, (220, 300))
 
     # --- Ververs het beeldscherm met de nieuwe graphics ---
-    clock.tick(30)  # Ververs scherm met 30 frames per seconde
-    pygame.display.flip()  # Ververs het beeldscherm met de bijgewerkte versie
+   clock.tick(30)  # Ververs scherm met 30 frames per seconde
+   pygame.display.flip()  # Ververs het beeldscherm met de bijgewerkte versie
 
 
 
