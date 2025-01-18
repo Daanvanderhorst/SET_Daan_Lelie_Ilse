@@ -1,5 +1,5 @@
 from comparison import *
-from clescles import *
+from classes import *
 import pygame
 import random
 
