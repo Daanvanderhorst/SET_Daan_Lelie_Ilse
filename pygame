@@ -17,8 +17,7 @@ MAX_KAARTEN_OP_BORD = 12 #Maximaal aantal kaarten op het bord
 twelvecards = []
 card_images = []
 selected_cards = []
-q = True
-button = {}
+
 boardcards = []  # Lijst voor kaarten met hun Rects en afbeeldingen
 start_time = pygame.time.get_ticks()
 timer_duration = 30000  # 30 seconden in milliseconden
@@ -41,6 +40,7 @@ WINDOW_SIZE = [1250, 700] # Afmeting van spelscherm instellen (in pixels: [breed
 font = pygame.font.Font(None, 50)
 timer_font = pygame.font.Font(None, 40)  # Font voor de timer
 
+
 # Timer variabelen
 
 
@@ -60,10 +60,9 @@ def replace_found_set(set):#from high to low
       global eindtijd
       eindtijd = int(pygame.time.get_ticks()/1000)
 
-button_layout_rect = pygame.Rect(0, 0, 100, 20)
-klok_layout_rect = pygame.Rect(WINDOW_SIZE[0] - 140, 20, 150, 150)
-button_layout_rect.bottomright = (30, 20)
 
+klok_layout_rect = pygame.Rect(WINDOW_SIZE[0] - 140, 20, 150, 150)
+button_layout_rect = pygame.Rect(575, 20, 100, 50)
 
 
 
@@ -108,8 +107,6 @@ def kaartenklikken():
          pygame.draw.rect(screen, "lightgreen", border_rect, 20)  
 
 
-button_layout_rect = pygame.Rect(575, 20, 100, 50)
-
 def makebutton():
    pygame.draw.rect(screen, "lightgreen", button_layout_rect)  
    font = pygame.font.Font(None, 50)
@@ -139,7 +136,6 @@ def checkbutton():
          wrong_timer = 60
       
 def draw_timer():
-    global q 
     if timer_running:
         elapsed_time = pygame.time.get_ticks() - start_time  # Bereken de verstreken tijd
         remaining_time = max(0, timer_duration - elapsed_time)  # Zorg ervoor dat de tijd niet negatief wordt
@@ -147,6 +143,9 @@ def draw_timer():
         timer_text = timer_font.render(f'Time: {seconds_left}s', True, "black")
         screen.blit(timer_text, (WINDOW_SIZE[0] - 140, 20))  # Plaats de timer rechtsbovenin
         if remaining_time == 0:
+            for card in selected_cards:
+               card.change_selected()
+            selected_cards.clear()
             replace_found_set(firstset(boardcards))
             global score_computer
             score_computer += 1
@@ -160,7 +159,7 @@ def draw_timer():
 pygame.init()
 screen = pygame.display.set_mode(WINDOW_SIZE) # Spelscherm maken (en opslaan in een variabele screen)
 screen.fill("pink")
-pygame.display.set_caption("Vind de SET") # Titel van spelscherm instellen
+pygame.display.set_caption("Find the SET") # Titel van spelscherm instellen
 clock = pygame.time.Clock()# Zorgt voor verversingssnelheid van het scherm
 
 
@@ -201,16 +200,16 @@ while not spel_is_afgelopen:
    else:
       screen.fill("pink")
       if score_player > score_computer:
-         win_text = font.render(f"Gefeliciteerd!", True, "black")
-         score_eindtext = font.render(f'Je hebt {score_player} sets gevonden en maar {score_computer} sets misgelopen', True, "black")
+         win_text = font.render(f"Congratulations!", True, "black")
+         score_eindtext = font.render(f'You have found {score_player} SETs and only missed {score_computer} SETs', True, "black")
          screen.blit(win_text, (500, 250))
          screen.blit(score_eindtext, (200, 300))
       else:
-         lose_text = font.render(f"Goed geprobeerd :(", True, "black")
-         score_eindtext = font.render(f"Je hebt {score_player} sets gevonden en {score_computer} sets misgelopen", True, "black")
+         lose_text = font.render(f"Nice try :(", True, "black")
+         score_eindtext = font.render(f"You have found {score_player} SETs and only missed {score_computer} SETs", True, "black")
          screen.blit(lose_text, (490, 250))
          screen.blit(score_eindtext, (220, 300))
-      time_text = font.render(f"Je hebt er {eindtijd} seconden over gedaan", True, "black")
+      time_text = font.render(f"You took {eindtijd} seconds", True, "black")
       screen.blit(time_text, (350, 350))
 
     # --- Ververs het beeldscherm met de nieuwe graphics ---
