@@ -1,22 +1,23 @@
 
-def checkforset(card1, card2, card3): #binnen drie kaarten kijken of er een set is
-    for i in range(0,4): #je gaat alle verschillende eigenschappen af (4 eigenschappen)
-        if (card1[i] + card2[i] + card3[i])%3 != 0: #checken of alles niet hetzelfde of niet verschillend is 
+def checkforset(card1, card2, card3): 
+    for i in range(0,4): # for all properties
+        if (card1[i] + card2[i] + card3[i])%3 != 0: # check if everything is the same or all different
             return False 
-    return True #dan is het een set
+    return True 
 
-def listofsets(cards): #binnen meerdere kaarten alle sets zoeken
-    sets = []  #een lege lijst maken voor sets die we later willen opslaan
+def listofsets(cards): 
+    sets = [] # where we're going to store the sets
     for i in range(0, len(cards)-2): 
         for j in range(i+1, len(cards)-1): 
-            for k in range(j+1, len(cards)):
+            for k in range(j+1, len(cards)): #loops over all combinations of cards
                 if checkforset(cards[i].list, cards[j].list, cards[k].list):
-                    sets.append((i, j, k)) #de plus 1 is zodat je niet de index krijg maar echt het nummer van de fysieke kaart
-    return sets #een lijst terug met alle sets uit de kaarten 
+                    sets.append((i, j, k)) # add set tuple to list of sets
+    return sets # return entire list
 
-def firstset(cards): #dit vind gewoon een set en dan stopt het 
+def firstset(cards): # stops after 1 set 
     for i in range(0, len(cards)-2):
         for j in range(i+1, len(cards)-1):
             for k in range(j+1, len(cards)):
                 if checkforset(cards[i].list, cards[j].list, cards[k].list):
                     return ([k, j, i])
+    return[]
