@@ -1,15 +1,4 @@
 # SET_Daan_Lelie_Ilse
-final project programming in mathematics
-
-def generatecards():
-   allthecards = []
-   allthecards.append(random.randrange(0, 81, 1))
-   for i in range(0, 30):
-      q = random.randrange(0, 81, 1)
-      alreadyused=True
-      for j in range(len(allthecards)):
-         if allthecards[i]==q:
-            alreadyused=False
-      if alreadyused:
-         allthecards.append(q)
-   return(allthecards)
+This project was started as the final project for our programming in mathematics course.
+We had to learn a lot to make this happen. First we had to learn how classes worked and what you could do with them. But after some time experimenting we began to understand how it could be used and how usefull it was. Secondly was pygame and its helpful but also overbearing amount of functions. It really is a nice tool that makes displaying things way easier than in normal python. Thirdly was how the big while loop for the graphics and events worked. We struggled a bit with displaying things that changed over time, they overlapped the previous things but it was still there. Eventually we figured out how te clear the screen every frame and solved it.
+To try the project open the pygame file and run it. The window should appear after a few seconds.
